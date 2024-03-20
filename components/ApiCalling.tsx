@@ -26,6 +26,31 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
         if (ref.current) Prism.highlightElement(ref.current, false);
     }, [children]);
 
+    const getObjectKey = (key: string, customKey?: string): string => {
+        if(customKey){
+            return `${customKey}[${key}]`
+        }
+        return key
+    }
+
+    const generateCurlData = (data: any, customKey?: string) => {
+        let curlCmd = '';
+        for (const key in data) {
+            const value = data[key]
+            if (typeof value === 'object') {
+                curlCmd += generateCurlData(value, getObjectKey(key, customKey))
+            } else {
+                if (customKey) {
+                    curlCmd += `\\${'\n'} -d '${customKey}[${key}]=${value}' `;
+                } else {
+                    curlCmd += `\\${'\n'} -d '${key}=${value}' `;
+                }
+            }
+        }
+
+        return curlCmd;
+    }
+
     const generateCurlCommand = (url: string, method: methods = methods.GET, headers: any = {}, data: any = {}) => {
         let curlCmd = `curl -X ${method.toUpperCase()} ${url} `;
 
@@ -33,17 +58,7 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
             curlCmd += `\\${'\n'} -H '${header}: ${headers[header]}' `;
         }
 
-        for (let key in data) {
-            const value = data[key];
-            if (typeof value === 'object') {
-                for (let subKey in value) {
-                    curlCmd += ` -d '${key}[${subKey}]=${value[subKey]}'`;
-                }
-            } else {
-                curlCmd += `\\${'\n'} -d '${key}=${value}' `;
-            }
-        }
-
+        curlCmd += generateCurlData(data)
         return curlCmd;
     }
 
@@ -54,14 +69,14 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
     return (
         <div className='code api-calling-block' aria-live="polite">
             <div className='header'>
-                <div style={{display: 'flex'}}>
+                <div style={{ display: 'flex' }}>
                     <p className='method'>{method}</p>
                     <p className='endpoint'>{endpoint}</p>
                 </div>
 
-                <FontAwesomeIcon 
-                    icon={faClipboard} 
-                    color='#fff' 
+                <FontAwesomeIcon
+                    icon={faClipboard}
+                    color='#fff'
                     style={{
                         cursor: 'pointer'
                     }}
