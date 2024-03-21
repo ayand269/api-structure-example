@@ -6,6 +6,7 @@ export const apicalling = {
         method: { type: String, render: 'method', required: true },
         endpoint: { type: String, render: 'endpoint', required: true },
         headers: {type: String, render: 'headers', required: true},
-        data: {type: String, render: 'data', required: true}
+        data: {type: String, render: 'data', required: true},
+        baseurl: {type: String, render: 'baseurl', required: true}
     },
 };

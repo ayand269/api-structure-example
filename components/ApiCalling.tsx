@@ -10,6 +10,7 @@ type Props = {
     endpoint: string;
     headers: string;
     data: string;
+    baseurl: string;
 }
 
 enum methods {
@@ -20,7 +21,7 @@ enum methods {
     PATCH = 'PATCH'
 }
 
-const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
+const ApiCalling = ({ children, method, endpoint, headers, data, baseurl }: Props) => {
     const ref = useRef(null);
     useEffect(() => {
         if (ref.current) Prism.highlightElement(ref.current, false);
@@ -51,8 +52,8 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
         return curlCmd;
     }
 
-    const generateCurlCommand = (url: string, method: methods = methods.GET, headers: any = {}, data: any = {}) => {
-        let curlCmd = `curl -X ${method.toUpperCase()} ${url} `;
+    const generateCurlCommand = (baseurl: string, url: string, method: methods = methods.GET, headers: any = {}, data: any = {}) => {
+        let curlCmd = `curl -X ${method.toUpperCase()} ${baseurl}${url} `;
 
         for (let header in headers) {
             curlCmd += `\\${'\n'} -H '${header}: ${headers[header]}' `;
@@ -63,7 +64,7 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
     }
 
     const copyToClipboard = async (): Promise<void> => {
-        await navigator.clipboard.writeText(generateCurlCommand(endpoint, method, JSON.parse(headers), JSON.parse(data)))
+        await navigator.clipboard.writeText(generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), JSON.parse(data)))
     }
 
     return (
@@ -90,7 +91,7 @@ const ApiCalling = ({ children, method, endpoint, headers, data }: Props) => {
                     ref={ref}
                     className={`language-bash`}
                 >
-                    {generateCurlCommand(endpoint, method, JSON.parse(headers), JSON.parse(data))}
+                    {generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), JSON.parse(data))}
                 </pre>
             </div>
         </div>
