@@ -34,13 +34,12 @@ export default function App({ Component, pageProps }: AppProps<MyAppProps>) {
     }
 
     const handleScroll = () => {
-        console.log("cal")
         if (!containerRef.current) return;
 
         const scrollTop = containerRef.current.scrollTop;
         const childElement = document.getElementsByClassName('codes-block')[0];
 
-        if(childElement){
+        if(childElement && containerRef.current.offsetWidth > 600){
             if(scrollTop > 60) {
                 childElement.classList.add('sticky');
             }else{
@@ -76,7 +75,7 @@ export default function App({ Component, pageProps }: AppProps<MyAppProps>) {
             <div className="page">
                 <SideNav />
 
-                <main className="flex column">
+                <main>
                     <Header />
                     <div className="article-main-section" ref={containerRef}>
                         <Component {...pageProps} />

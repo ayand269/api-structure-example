@@ -15,51 +15,7 @@ type SidebarItem = {
 }
 export function SideNav() {
     const router = useRouter();
-    const [items, setItems] = useState<Array<SidebarItem>>([
-        {
-            title: 'Introduction',
-            href: '/'
-        },
-        {
-            title: 'Authentication',
-            href: '/docs'
-        },
-        {
-            title: 'Section 1',
-            expandable: true,
-            expanded: true,
-            children: [
-                {
-                    title: 'Payment Intent',
-                    href: '/docs/payment-intent',
-                    expanded: false,
-                    children: [
-                        {
-                            title: 'Create Payment Intent',
-                            href: '/docs/payment-intent/create'
-                        },
-                        {
-                            title: 'Update Payment Intent',
-                            href: '/docs/payment-intent/update'
-                        },
-                        {
-                            title: 'Get All Payment Intent',
-                            href: '/docs/payment-intent/get-all'
-                        },
-                        {
-                            title: 'Delete Payment Intent',
-                            href: '/docs/payment-intent/delete'
-                        }
-                    ]
-                },
-                {
-                    title: 'Balance',
-                    href: '/docs/balance',
-                    expanded: false
-                }
-            ]
-        }
-    ])
+    const [items, setItems] = useState<Array<SidebarItem>>([{"title":"Introduction","href":"/"},{"title":"Product","href":"/docs/product","expanded":false,"children":[{"title":"Add Product","href":"/docs/product/add-product"}]}])
 
     const findHref = (path: string, elements: Array<SidebarItem>, parentIndex: Array<number> | null = null): Array<number> | undefined => {
         let index = elements.findIndex(it => it.href === path);
@@ -90,18 +46,18 @@ export function SideNav() {
             return elements
         } else {
             let data = updateExpanded(indexes, elements[indexes[executableIndex]].children ?? [], executableIndex + 1)
-            if(data){
+            if (data) {
                 elements[indexes[executableIndex]].children = data
 
                 return elements
             }
-            
+
         }
     }
 
     useEffect(() => {
-        let indexes = findHref('/docs/payment-intent/create', items);
-        if(indexes){
+        let indexes = findHref(router.pathname, items);
+        if (indexes) {
             let data = updateExpanded(indexes, items, 0)
             setItems(JSON.parse(JSON.stringify(data)))
         }
@@ -123,21 +79,39 @@ export function SideNav() {
                 {items.map((item, index) => (
                     <div key={item.title}>
                         {
-                            item.expandable ?
+                            item.children && item.children.length > 0 ?
                                 <>
-                                    <div
-                                        className='sidebar-item expandable'
-                                        onClick={() => {
-                                            setItems(state => {
-                                                state[index].expanded = !state[index].expanded
-                                                return JSON.parse(JSON.stringify(state))
-                                            })
-                                        }}
-                                    >
-                                        <span>{item.title}</span>
+                                    {
+                                        item.expandable ?
+                                            <div
+                                                className='sidebar-item expandable'
+                                                onClick={() => {
+                                                    setItems(state => {
+                                                        state[index].expanded = !state[index].expanded
+                                                        return JSON.parse(JSON.stringify(state))
+                                                    })
+                                                }}
+                                            >
+                                                <span>{item.title}</span>
 
-                                        <FontAwesomeIcon icon={item.expanded ? faChevronDown : faChevronUp} />
-                                    </div>
+                                                <FontAwesomeIcon icon={item.expanded ? faChevronDown : faChevronUp} />
+                                            </div>
+                                            :
+                                            <Link
+                                                className={`sidebar-item ${router.pathname === item.href ? 'active' : ''}`}
+                                                href={item.href ?? ''}
+                                                onClick={() => {
+                                                    setItems(state => {
+                                                        state[index].expanded = true
+
+                                                        return JSON.parse(JSON.stringify(state))
+                                                    })
+                                                }}
+                                            >
+                                                <span>{item.title}</span>
+                                            </Link>
+                                    }
+
 
                                     <div
                                         style={{
