@@ -38,6 +38,10 @@ h2 {
     margin: 1em 0;
 }
 
+article h2 {
+    text-transform: capitalize;
+}
+
 a {
     color: rgba(75, 85, 99, 1);
 }
@@ -166,6 +170,7 @@ a {
     font-size: 15px;
     font-weight: 400;
     padding: 0px;
+    text-transform: capitalize;
 }
 
 .sidebar-item.active {
@@ -300,7 +305,7 @@ pre[class*="language-"] {
     margin-bottom: 5px;
     display: flex;
     flex-direction: column;
-    min-height: 134px;
+    min-height: 121px;
 }
 
 .code-title {

@@ -64,7 +64,7 @@ const ApiCalling = ({ children, method, endpoint, headers, data, baseurl }: Prop
     }
 
     const copyToClipboard = async (): Promise<void> => {
-        await navigator.clipboard.writeText(generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), JSON.parse(data)))
+        await navigator.clipboard.writeText(generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), data != 'undefined' ? JSON.parse(data) : {}))
     }
 
     return (
@@ -91,7 +91,7 @@ const ApiCalling = ({ children, method, endpoint, headers, data, baseurl }: Prop
                     ref={ref}
                     className={`language-bash`}
                 >
-                    {generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), JSON.parse(data))}
+                    {generateCurlCommand(baseurl, endpoint, method, JSON.parse(headers), data != 'undefined' ? JSON.parse(data) : {})}
                 </pre>
             </div>
         </div>
