@@ -15,7 +15,7 @@ type SidebarItem = {
 }
 export function SideNav() {
     const router = useRouter();
-    const [items, setItems] = useState<Array<SidebarItem>>([{"title":"Introduction","href":"/"},{"title":"Product","href":"/docs/product","expanded":false,"children":[{"title":"Add Product","href":"/docs/product/add-product"}]}])
+    const [items, setItems] = useState<Array<SidebarItem>>([])
 
     const findHref = (path: string, elements: Array<SidebarItem>, parentIndex: Array<number> | null = null): Array<number> | undefined => {
         let index = elements.findIndex(it => it.href === path);
